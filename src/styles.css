@@ -39,3 +39,40 @@ input {
     color: #5f6368;
     line-height: 1.7;
 }
+
+.todo-input {
+    margin-top: 40px;
+}
+
+.todo-input h2 {
+    margin: 0 0 20px;
+    font-size: 20px;
+    letter-spacing: 0;
+}
+
+.todo-input label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.todo-input input {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 12px;
+    border: 1px solid #aeb4ba;
+    border-radius: 6px;
+    color: #202124;
+    background: #ffffff;
+}
+
+.todo-input input:focus {
+    border-color: #1769aa;
+    outline: 3px solid #b9dcf7;
+}
+
+.todo-input .todo-preview {
+    min-height: 27px;
+    margin-top: 12px;
+    color: #3c4043;
+}
