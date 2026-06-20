@@ -5,6 +5,7 @@ import { FormEvent, useState } from "react";
 type Todo = {
     id: string;
     text: string;
+    completed: boolean;
 };
 
 export default function Home() {
@@ -23,10 +24,21 @@ export default function Home() {
         const newTodo: Todo = {
             id: crypto.randomUUID(),
             text: trimmedTodoText,
+            completed: false,
         };
 
         setTodos((currentTodos) => [...currentTodos, newTodo]);
         setTodoText("");
+    };
+
+    const handleToggle = (todoId: string) => {
+        setTodos((currentTodos) =>
+            currentTodos.map((todo) =>
+                todo.id === todoId
+                    ? { ...todo, completed: !todo.completed }
+                    : todo,
+            ),
+        );
     };
 
     return (
@@ -63,7 +75,19 @@ export default function Home() {
                 ) : (
                     <ul>
                         {todos.map((todo) => (
-                            <li key={todo.id}>{todo.text}</li>
+                            <li
+                                key={todo.id}
+                                className={todo.completed ? "completed" : ""}
+                            >
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        checked={todo.completed}
+                                        onChange={() => handleToggle(todo.id)}
+                                    />
+                                    <span>{todo.text}</span>
+                                </label>
+                            </li>
                         ))}
                     </ul>
                 )}

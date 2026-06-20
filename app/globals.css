@@ -134,6 +134,31 @@ input {
     overflow-wrap: anywhere;
 }
 
+.todo-list label {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    cursor: pointer;
+}
+
+.todo-list input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    margin: 1px 0 0;
+    flex: 0 0 auto;
+    accent-color: #1769aa;
+}
+
+.todo-list input[type="checkbox"]:focus-visible {
+    outline: 3px solid #b9dcf7;
+    outline-offset: 2px;
+}
+
+.todo-list li.completed span {
+    color: #72777c;
+    text-decoration: line-through;
+}
+
 @media (max-width: 480px) {
     .app {
         padding: 40px 0;
