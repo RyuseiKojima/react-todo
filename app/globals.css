@@ -122,6 +122,41 @@ input {
     letter-spacing: 0;
 }
 
+.todo-filters {
+    display: inline-flex;
+    margin-bottom: 20px;
+    padding: 3px;
+    border: 1px solid #c5cbd1;
+    border-radius: 8px;
+    background: #e8ebee;
+}
+
+.todo-filters button {
+    min-height: 36px;
+    padding: 7px 14px;
+    border: 0;
+    border-radius: 5px;
+    color: #4d5358;
+    background: transparent;
+    cursor: pointer;
+}
+
+.todo-filters button:hover:not(.active) {
+    color: #202124;
+    background: #dadddf;
+}
+
+.todo-filters button.active {
+    color: #ffffff;
+    background: #1769aa;
+    font-weight: 600;
+}
+
+.todo-filters button:focus-visible {
+    outline: 3px solid #b9dcf7;
+    outline-offset: 2px;
+}
+
 .todo-list ul {
     margin: 0;
     padding: 0;
