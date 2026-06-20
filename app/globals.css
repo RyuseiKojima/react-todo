@@ -129,6 +129,9 @@ input {
 }
 
 .todo-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
     padding: 14px 0;
     border-bottom: 1px solid #d8dde2;
     overflow-wrap: anywhere;
@@ -137,6 +140,8 @@ input {
 .todo-list label {
     display: flex;
     align-items: flex-start;
+    flex: 1;
+    min-width: 0;
     gap: 12px;
     cursor: pointer;
 }
@@ -157,6 +162,26 @@ input {
 .todo-list li.completed span {
     color: #72777c;
     text-decoration: line-through;
+}
+
+.todo-list li button {
+    min-height: 32px;
+    padding: 5px 10px;
+    border: 1px solid #c23b3b;
+    border-radius: 6px;
+    color: #a12626;
+    background: transparent;
+    cursor: pointer;
+}
+
+.todo-list li button:hover {
+    color: #ffffff;
+    background: #a12626;
+}
+
+.todo-list li button:focus-visible {
+    outline: 3px solid #f0b8b8;
+    outline-offset: 2px;
 }
 
 @media (max-width: 480px) {

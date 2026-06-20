@@ -41,6 +41,12 @@ export default function Home() {
         );
     };
 
+    const handleDelete = (todoId: string) => {
+        setTodos((currentTodos) =>
+            currentTodos.filter((todo) => todo.id !== todoId),
+        );
+    };
+
     return (
         <main className="app">
             <h1>Todoリスト</h1>
@@ -87,6 +93,13 @@ export default function Home() {
                                     />
                                     <span>{todo.text}</span>
                                 </label>
+                                <button
+                                    type="button"
+                                    onClick={() => handleDelete(todo.id)}
+                                    aria-label={`${todo.text}を削除`}
+                                >
+                                    削除
+                                </button>
                             </li>
                         ))}
                     </ul>
