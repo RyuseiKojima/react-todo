@@ -2,10 +2,14 @@
     box-sizing: border-box;
 }
 
+html,
+body {
+    min-width: 320px;
+    min-height: 100%;
+}
+
 body {
     margin: 0;
-    min-width: 320px;
-    min-height: 100vh;
     color: #202124;
     background: #f4f6f8;
     font-family:
@@ -16,10 +20,6 @@ body {
 button,
 input {
     font: inherit;
-}
-
-#root {
-    min-height: 100vh;
 }
 
 .app {

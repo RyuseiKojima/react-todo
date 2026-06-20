@@ -1,6 +1,8 @@
+"use client";
+
 import { useState } from "react";
 
-function App() {
+export default function Home() {
     const [todoText, setTodoText] = useState("");
 
     return (
@@ -25,5 +27,3 @@ function App() {
         </main>
     );
 }
-
-export default App;
