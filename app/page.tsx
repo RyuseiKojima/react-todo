@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
+import TodoItem from "./components/TodoItem";
 
 type Todo = {
     id: string;
@@ -169,26 +170,13 @@ export default function Home() {
                 ) : (
                     <ul>
                         {filteredTodos.map((todo) => (
-                            <li
+                            <TodoItem
                                 key={todo.id}
-                                className={todo.completed ? "completed" : ""}
-                            >
-                                <label>
-                                    <input
-                                        type="checkbox"
-                                        checked={todo.completed}
-                                        onChange={() => handleToggle(todo.id)}
-                                    />
-                                    <span>{todo.text}</span>
-                                </label>
-                                <button
-                                    type="button"
-                                    onClick={() => handleDelete(todo.id)}
-                                    aria-label={`${todo.text}を削除`}
-                                >
-                                    削除
-                                </button>
-                            </li>
+                                text={todo.text}
+                                completed={todo.completed}
+                                onToggle={() => handleToggle(todo.id)}
+                                onDelete={() => handleDelete(todo.id)}
+                            />
                         ))}
                     </ul>
                 )}
