@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 
 type Todo = {
     id: string;
@@ -10,10 +10,53 @@ type Todo = {
 
 type TodoFilter = "all" | "active" | "completed";
 
+const TODO_STORAGE_KEY = "react-todo-items";
+
+const isTodo = (value: unknown): value is Todo => {
+    if (typeof value !== "object" || value === null) {
+        return false;
+    }
+
+    const todo = value as Partial<Todo>;
+
+    return (
+        typeof todo.id === "string" &&
+        typeof todo.text === "string" &&
+        typeof todo.completed === "boolean"
+    );
+};
+
 export default function Home() {
     const [todoText, setTodoText] = useState("");
     const [todos, setTodos] = useState<Todo[]>([]);
     const [todoFilter, setTodoFilter] = useState<TodoFilter>("all");
+    const [isStorageLoaded, setIsStorageLoaded] = useState(false);
+
+    useEffect(() => {
+        try {
+            const savedTodos = localStorage.getItem(TODO_STORAGE_KEY);
+
+            if (savedTodos) {
+                const parsedTodos: unknown = JSON.parse(savedTodos);
+
+                if (Array.isArray(parsedTodos) && parsedTodos.every(isTodo)) {
+                    setTodos(parsedTodos);
+                }
+            }
+        } catch {
+            localStorage.removeItem(TODO_STORAGE_KEY);
+        }
+
+        setIsStorageLoaded(true);
+    }, []);
+
+    useEffect(() => {
+        if (!isStorageLoaded) {
+            return;
+        }
+
+        localStorage.setItem(TODO_STORAGE_KEY, JSON.stringify(todos));
+    }, [todos, isStorageLoaded]);
 
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
