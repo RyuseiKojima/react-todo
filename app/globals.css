@@ -261,6 +261,41 @@ input {
     outline: 3px solid #b9dcf7;
 }
 
+.todo-status {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.todo-status button {
+    min-height: 36px;
+    padding: 7px 12px;
+    border: 1px solid #c23b3b;
+    border-radius: 6px;
+    color: #a12626;
+    background: transparent;
+    cursor: pointer;
+}
+
+.todo-status button:hover:not(:disabled) {
+    color: #ffffff;
+    background: #a12626;
+}
+
+.todo-status button:focus-visible {
+    outline: 3px solid #f0b8b8;
+    outline-offset: 2px;
+}
+
+.todo-status button:disabled {
+    border-color: #c5c9ce;
+    color: #777d82;
+    background: #e2e5e8;
+    cursor: not-allowed;
+}
+
 @media (max-width: 480px) {
     .app {
         padding: 40px 0;
@@ -278,5 +313,10 @@ input {
 
     .todo-edit-form input {
         flex-basis: 100%;
+    }
+
+    .todo-status {
+        align-items: stretch;
+        flex-direction: column;
     }
 }

@@ -102,6 +102,16 @@ export default function Home() {
         );
     };
 
+    const handleClearCompleted = () => {
+        setTodos((currentTodos) =>
+            currentTodos.filter((todo) => !todo.completed),
+        );
+        setTodoFilter("all");
+    };
+
+    const activeTodoCount = todos.filter((todo) => !todo.completed).length;
+    const completedTodoCount = todos.length - activeTodoCount;
+
     const filteredTodos = todos.filter((todo) => {
         if (todoFilter === "active") {
             return !todo.completed;
@@ -190,6 +200,20 @@ export default function Home() {
                             />
                         ))}
                     </ul>
+                )}
+                {todos.length > 0 && (
+                    <div className="todo-status">
+                        <p aria-live="polite">
+                            未完了: {activeTodoCount}件 / 全体: {todos.length}件
+                        </p>
+                        <button
+                            type="button"
+                            onClick={handleClearCompleted}
+                            disabled={completedTodoCount === 0}
+                        >
+                            完了済みを削除
+                        </button>
+                    </div>
                 )}
             </section>
         </main>
