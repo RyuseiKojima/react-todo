@@ -94,6 +94,14 @@ export default function Home() {
         );
     };
 
+    const handleEdit = (todoId: string, newText: string) => {
+        setTodos((currentTodos) =>
+            currentTodos.map((todo) =>
+                todo.id === todoId ? { ...todo, text: newText } : todo,
+            ),
+        );
+    };
+
     const filteredTodos = todos.filter((todo) => {
         if (todoFilter === "active") {
             return !todo.completed;
@@ -175,6 +183,9 @@ export default function Home() {
                                 text={todo.text}
                                 completed={todo.completed}
                                 onToggle={() => handleToggle(todo.id)}
+                                onEdit={(newText) =>
+                                    handleEdit(todo.id, newText)
+                                }
                                 onDelete={() => handleDelete(todo.id)}
                             />
                         ))}

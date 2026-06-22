@@ -199,24 +199,66 @@ input {
     text-decoration: line-through;
 }
 
+.todo-actions {
+    display: flex;
+    gap: 8px;
+}
+
 .todo-list li button {
     min-height: 32px;
     padding: 5px 10px;
-    border: 1px solid #c23b3b;
+    border: 1px solid #82909c;
     border-radius: 6px;
-    color: #a12626;
+    color: #39434c;
     background: transparent;
     cursor: pointer;
 }
 
 .todo-list li button:hover {
     color: #ffffff;
-    background: #a12626;
+    background: #52616d;
 }
 
 .todo-list li button:focus-visible {
-    outline: 3px solid #f0b8b8;
+    outline: 3px solid #b9dcf7;
     outline-offset: 2px;
+}
+
+.todo-list li button:disabled {
+    color: #777d82;
+    background: #e2e5e8;
+    cursor: not-allowed;
+}
+
+.todo-list li .delete-button {
+    border-color: #c23b3b;
+    color: #a12626;
+}
+
+.todo-list li .delete-button:hover {
+    color: #ffffff;
+    background: #a12626;
+}
+
+.todo-edit-form {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    gap: 8px;
+}
+
+.todo-edit-form input {
+    min-width: 0;
+    min-height: 36px;
+    padding: 7px 10px;
+    border: 1px solid #82909c;
+    border-radius: 6px;
+    flex: 1;
+}
+
+.todo-edit-form input:focus {
+    border-color: #1769aa;
+    outline: 3px solid #b9dcf7;
 }
 
 @media (max-width: 480px) {
@@ -227,5 +269,14 @@ input {
     .todo-form-row {
         align-items: stretch;
         flex-direction: column;
+    }
+
+    .todo-edit-form {
+        align-items: stretch;
+        flex-wrap: wrap;
+    }
+
+    .todo-edit-form input {
+        flex-basis: 100%;
     }
 }
