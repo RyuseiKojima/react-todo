@@ -1,0 +1,78 @@
+import { fireEvent, render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
+
+import TodoItem from "./TodoItem";
+
+describe("TodoItem", () => {
+    it("todoの内容を表示する", () => {
+        render(
+            <TodoItem
+                text="買い物に行く"
+                completed={false}
+                onToggle={vi.fn()}
+                onEdit={vi.fn()}
+                onDelete={vi.fn()}
+            />,
+        );
+
+        expect(screen.getByText("買い物に行く")).toBeInTheDocument();
+    });
+
+    it("チェックボックスをクリックしたら完了状態の切り替え処理を呼ぶ", () => {
+        const handleToggle = vi.fn();
+
+        render(
+            <TodoItem
+                text="買い物に行く"
+                completed={false}
+                onToggle={handleToggle}
+                onEdit={vi.fn()}
+                onDelete={vi.fn()}
+            />,
+        );
+
+        fireEvent.click(screen.getByRole("checkbox"));
+
+        expect(handleToggle).toHaveBeenCalledTimes(1);
+    });
+
+    it("編集して保存したら新しい内容を渡す", () => {
+        const handleEdit = vi.fn();
+
+        render(
+            <TodoItem
+                text="買い物に行く"
+                completed={false}
+                onToggle={vi.fn()}
+                onEdit={handleEdit}
+                onDelete={vi.fn()}
+            />,
+        );
+
+        fireEvent.click(screen.getByRole("button", { name: "編集" }));
+        fireEvent.change(screen.getByRole("textbox", { name: "買い物に行くを編集" }), {
+            target: { value: "牛乳を買う" },
+        });
+        fireEvent.click(screen.getByRole("button", { name: "保存" }));
+
+        expect(handleEdit).toHaveBeenCalledWith("牛乳を買う");
+    });
+
+    it("削除ボタンをクリックしたら削除処理を呼ぶ", () => {
+        const handleDelete = vi.fn();
+
+        render(
+            <TodoItem
+                text="買い物に行く"
+                completed={false}
+                onToggle={vi.fn()}
+                onEdit={vi.fn()}
+                onDelete={handleDelete}
+            />,
+        );
+
+        fireEvent.click(screen.getByRole("button", { name: "買い物に行くを削除" }));
+
+        expect(handleDelete).toHaveBeenCalledTimes(1);
+    });
+});
