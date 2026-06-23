@@ -1,63 +1,22 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 import TodoItem from "./components/TodoItem";
-
-type Todo = {
-    id: string;
-    text: string;
-    completed: boolean;
-};
+import { useTodos } from "./hooks/useTodos";
 
 type TodoFilter = "all" | "active" | "completed";
 
-const TODO_STORAGE_KEY = "react-todo-items";
-
-const isTodo = (value: unknown): value is Todo => {
-    if (typeof value !== "object" || value === null) {
-        return false;
-    }
-
-    const todo = value as Partial<Todo>;
-
-    return (
-        typeof todo.id === "string" &&
-        typeof todo.text === "string" &&
-        typeof todo.completed === "boolean"
-    );
-};
-
 export default function Home() {
     const [todoText, setTodoText] = useState("");
-    const [todos, setTodos] = useState<Todo[]>([]);
     const [todoFilter, setTodoFilter] = useState<TodoFilter>("all");
-    const [isStorageLoaded, setIsStorageLoaded] = useState(false);
-
-    useEffect(() => {
-        try {
-            const savedTodos = localStorage.getItem(TODO_STORAGE_KEY);
-
-            if (savedTodos) {
-                const parsedTodos: unknown = JSON.parse(savedTodos);
-
-                if (Array.isArray(parsedTodos) && parsedTodos.every(isTodo)) {
-                    setTodos(parsedTodos);
-                }
-            }
-        } catch {
-            localStorage.removeItem(TODO_STORAGE_KEY);
-        }
-
-        setIsStorageLoaded(true);
-    }, []);
-
-    useEffect(() => {
-        if (!isStorageLoaded) {
-            return;
-        }
-
-        localStorage.setItem(TODO_STORAGE_KEY, JSON.stringify(todos));
-    }, [todos, isStorageLoaded]);
+    const {
+        todos,
+        addTodo,
+        toggleTodo,
+        editTodo,
+        deleteTodo,
+        clearCompletedTodos,
+    } = useTodos();
 
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -68,44 +27,12 @@ export default function Home() {
             return;
         }
 
-        const newTodo: Todo = {
-            id: crypto.randomUUID(),
-            text: trimmedTodoText,
-            completed: false,
-        };
-
-        setTodos((currentTodos) => [...currentTodos, newTodo]);
+        addTodo(trimmedTodoText);
         setTodoText("");
     };
 
-    const handleToggle = (todoId: string) => {
-        setTodos((currentTodos) =>
-            currentTodos.map((todo) =>
-                todo.id === todoId
-                    ? { ...todo, completed: !todo.completed }
-                    : todo,
-            ),
-        );
-    };
-
-    const handleDelete = (todoId: string) => {
-        setTodos((currentTodos) =>
-            currentTodos.filter((todo) => todo.id !== todoId),
-        );
-    };
-
-    const handleEdit = (todoId: string, newText: string) => {
-        setTodos((currentTodos) =>
-            currentTodos.map((todo) =>
-                todo.id === todoId ? { ...todo, text: newText } : todo,
-            ),
-        );
-    };
-
     const handleClearCompleted = () => {
-        setTodos((currentTodos) =>
-            currentTodos.filter((todo) => !todo.completed),
-        );
+        clearCompletedTodos();
         setTodoFilter("all");
     };
 
@@ -192,11 +119,11 @@ export default function Home() {
                                 key={todo.id}
                                 text={todo.text}
                                 completed={todo.completed}
-                                onToggle={() => handleToggle(todo.id)}
+                                onToggle={() => toggleTodo(todo.id)}
                                 onEdit={(newText) =>
-                                    handleEdit(todo.id, newText)
+                                    editTodo(todo.id, newText)
                                 }
-                                onDelete={() => handleDelete(todo.id)}
+                                onDelete={() => deleteTodo(todo.id)}
                             />
                         ))}
                     </ul>
