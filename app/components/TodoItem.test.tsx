@@ -3,12 +3,15 @@ import { describe, expect, it, vi } from "vitest";
 
 import TodoItem from "./TodoItem";
 
+const CREATED_AT = "2026-06-24T03:30:00.000Z";
+
 describe("TodoItem", () => {
     it("todoの内容を表示する", () => {
         render(
             <TodoItem
                 text="買い物に行く"
                 completed={false}
+                createdAt={CREATED_AT}
                 onToggle={vi.fn()}
                 onEdit={vi.fn()}
                 onDelete={vi.fn()}
@@ -16,6 +19,10 @@ describe("TodoItem", () => {
         );
 
         expect(screen.getByText("買い物に行く")).toBeInTheDocument();
+        expect(screen.getByText("作成: 2026/6/24 12:30")).toHaveAttribute(
+            "datetime",
+            CREATED_AT,
+        );
     });
 
     it("チェックボックスをクリックしたら完了状態の切り替え処理を呼ぶ", () => {
@@ -25,6 +32,7 @@ describe("TodoItem", () => {
             <TodoItem
                 text="買い物に行く"
                 completed={false}
+                createdAt={CREATED_AT}
                 onToggle={handleToggle}
                 onEdit={vi.fn()}
                 onDelete={vi.fn()}
@@ -43,6 +51,7 @@ describe("TodoItem", () => {
             <TodoItem
                 text="買い物に行く"
                 completed={false}
+                createdAt={CREATED_AT}
                 onToggle={vi.fn()}
                 onEdit={handleEdit}
                 onDelete={vi.fn()}
@@ -65,6 +74,7 @@ describe("TodoItem", () => {
             <TodoItem
                 text="買い物に行く"
                 completed={false}
+                createdAt={CREATED_AT}
                 onToggle={vi.fn()}
                 onEdit={vi.fn()}
                 onDelete={handleDelete}

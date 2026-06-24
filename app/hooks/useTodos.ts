@@ -6,23 +6,36 @@ export type Todo = {
     id: string;
     text: string;
     completed: boolean;
+    createdAt: string;
 };
 
 const TODO_STORAGE_KEY = "react-todo-items";
 
-const isTodo = (value: unknown): value is Todo => {
+type StoredTodo = Omit<Todo, "createdAt"> & {
+    createdAt?: string;
+};
+
+const isStoredTodo = (value: unknown): value is StoredTodo => {
     if (typeof value !== "object" || value === null) {
         return false;
     }
 
-    const todo = value as Partial<Todo>;
+    const todo = value as Partial<StoredTodo>;
 
     return (
         typeof todo.id === "string" &&
         typeof todo.text === "string" &&
-        typeof todo.completed === "boolean"
+        typeof todo.completed === "boolean" &&
+        (todo.createdAt === undefined ||
+            (typeof todo.createdAt === "string" &&
+                !Number.isNaN(Date.parse(todo.createdAt))))
     );
 };
+
+const normalizeTodo = (todo: StoredTodo): Todo => ({
+    ...todo,
+    createdAt: todo.createdAt ?? new Date().toISOString(),
+});
 
 export function useTodos() {
     const [todos, setTodos] = useState<Todo[]>([]);
@@ -35,8 +48,11 @@ export function useTodos() {
             if (savedTodos) {
                 const parsedTodos: unknown = JSON.parse(savedTodos);
 
-                if (Array.isArray(parsedTodos) && parsedTodos.every(isTodo)) {
-                    setTodos(parsedTodos);
+                if (
+                    Array.isArray(parsedTodos) &&
+                    parsedTodos.every(isStoredTodo)
+                ) {
+                    setTodos(parsedTodos.map(normalizeTodo));
                 }
             }
         } catch {
@@ -59,6 +75,7 @@ export function useTodos() {
             id: crypto.randomUUID(),
             text,
             completed: false,
+            createdAt: new Date().toISOString(),
         };
 
         setTodos((currentTodos) => [...currentTodos, newTodo]);

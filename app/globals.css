@@ -194,7 +194,20 @@ input {
     outline-offset: 2px;
 }
 
-.todo-list li.completed span {
+.todo-content {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.todo-content time {
+    color: #72777c;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.todo-list li.completed .todo-text {
     color: #72777c;
     text-decoration: line-through;
 }

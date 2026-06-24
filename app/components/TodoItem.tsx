@@ -3,14 +3,25 @@ import { FormEvent, useState } from "react";
 type TodoItemProps = {
     text: string;
     completed: boolean;
+    createdAt: string;
     onToggle: () => void;
     onEdit: (newText: string) => void;
     onDelete: () => void;
 };
 
+const createdAtFormatter = new Intl.DateTimeFormat("ja-JP", {
+    timeZone: "Asia/Tokyo",
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+});
+
 export default function TodoItem({
     text,
     completed,
+    createdAt,
     onToggle,
     onEdit,
     onDelete,
@@ -70,7 +81,12 @@ export default function TodoItem({
                     checked={completed}
                     onChange={onToggle}
                 />
-                <span>{text}</span>
+                <span className="todo-content">
+                    <span className="todo-text">{text}</span>
+                    <time dateTime={createdAt}>
+                        作成: {createdAtFormatter.format(new Date(createdAt))}
+                    </time>
+                </span>
             </label>
             <div className="todo-actions">
                 <button type="button" onClick={handleEditStart}>

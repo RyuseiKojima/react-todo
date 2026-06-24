@@ -119,6 +119,7 @@ export default function Home() {
                                 key={todo.id}
                                 text={todo.text}
                                 completed={todo.completed}
+                                createdAt={todo.createdAt}
                                 onToggle={() => toggleTodo(todo.id)}
                                 onEdit={(newText) =>
                                     editTodo(todo.id, newText)
