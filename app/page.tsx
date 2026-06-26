@@ -5,10 +5,12 @@ import TodoItem from "./components/TodoItem";
 import { useTodos } from "./hooks/useTodos";
 
 type TodoFilter = "all" | "active" | "completed";
+type TodoSort = "newest" | "oldest";
 
 export default function Home() {
     const [todoText, setTodoText] = useState("");
     const [todoFilter, setTodoFilter] = useState<TodoFilter>("all");
+    const [todoSort, setTodoSort] = useState<TodoSort>("newest");
     const {
         todos,
         addTodo,
@@ -50,6 +52,16 @@ export default function Home() {
 
         return true;
     });
+    const sortedTodos = [...filteredTodos].sort((firstTodo, secondTodo) => {
+        const firstCreatedAt = new Date(firstTodo.createdAt).getTime();
+        const secondCreatedAt = new Date(secondTodo.createdAt).getTime();
+
+        if (todoSort === "oldest") {
+            return firstCreatedAt - secondCreatedAt;
+        }
+
+        return secondCreatedAt - firstCreatedAt;
+    });
 
     return (
         <main className="app">
@@ -80,33 +92,47 @@ export default function Home() {
 
             <section className="todo-list" aria-labelledby="todo-list-title">
                 <h2 id="todo-list-title">Todo一覧</h2>
-                <div className="todo-filters" aria-label="Todoの表示切り替え">
-                    <button
-                        type="button"
-                        className={todoFilter === "all" ? "active" : ""}
-                        aria-pressed={todoFilter === "all"}
-                        onClick={() => setTodoFilter("all")}
-                    >
-                        すべて
-                    </button>
-                    <button
-                        type="button"
-                        className={todoFilter === "active" ? "active" : ""}
-                        aria-pressed={todoFilter === "active"}
-                        onClick={() => setTodoFilter("active")}
-                    >
-                        未完了
-                    </button>
-                    <button
-                        type="button"
-                        className={todoFilter === "completed" ? "active" : ""}
-                        aria-pressed={todoFilter === "completed"}
-                        onClick={() => setTodoFilter("completed")}
-                    >
-                        完了
-                    </button>
+                <div className="todo-controls">
+                    <div className="todo-filters" aria-label="Todoの表示切り替え">
+                        <button
+                            type="button"
+                            className={todoFilter === "all" ? "active" : ""}
+                            aria-pressed={todoFilter === "all"}
+                            onClick={() => setTodoFilter("all")}
+                        >
+                            すべて
+                        </button>
+                        <button
+                            type="button"
+                            className={todoFilter === "active" ? "active" : ""}
+                            aria-pressed={todoFilter === "active"}
+                            onClick={() => setTodoFilter("active")}
+                        >
+                            未完了
+                        </button>
+                        <button
+                            type="button"
+                            className={todoFilter === "completed" ? "active" : ""}
+                            aria-pressed={todoFilter === "completed"}
+                            onClick={() => setTodoFilter("completed")}
+                        >
+                            完了
+                        </button>
+                    </div>
+                    <label className="todo-sort">
+                        並び順
+                        <select
+                            value={todoSort}
+                            onChange={(event) =>
+                                setTodoSort(event.target.value as TodoSort)
+                            }
+                        >
+                            <option value="newest">新しい順</option>
+                            <option value="oldest">古い順</option>
+                        </select>
+                    </label>
                 </div>
-                {filteredTodos.length === 0 ? (
+                {sortedTodos.length === 0 ? (
                     <p>
                         {todos.length === 0
                             ? "登録されたTodoはありません。"
@@ -114,7 +140,7 @@ export default function Home() {
                     </p>
                 ) : (
                     <ul>
-                        {filteredTodos.map((todo) => (
+                        {sortedTodos.map((todo) => (
                             <TodoItem
                                 key={todo.id}
                                 text={todo.text}

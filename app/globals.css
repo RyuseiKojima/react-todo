@@ -22,6 +22,10 @@ input {
     font: inherit;
 }
 
+select {
+    font: inherit;
+}
+
 .app {
     width: min(100% - 32px, 640px);
     margin: 0 auto;
@@ -122,9 +126,16 @@ input {
     letter-spacing: 0;
 }
 
+.todo-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
 .todo-filters {
     display: inline-flex;
-    margin-bottom: 20px;
     padding: 3px;
     border: 1px solid #c5cbd1;
     border-radius: 8px;
@@ -155,6 +166,29 @@ input {
 .todo-filters button:focus-visible {
     outline: 3px solid #b9dcf7;
     outline-offset: 2px;
+}
+
+.todo-sort {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #3c4043;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.todo-sort select {
+    min-height: 36px;
+    padding: 7px 28px 7px 10px;
+    border: 1px solid #82909c;
+    border-radius: 6px;
+    color: #202124;
+    background: #ffffff;
+}
+
+.todo-sort select:focus {
+    border-color: #1769aa;
+    outline: 3px solid #b9dcf7;
 }
 
 .todo-list ul {
@@ -317,6 +351,24 @@ input {
     .todo-form-row {
         align-items: stretch;
         flex-direction: column;
+    }
+
+    .todo-controls {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .todo-filters {
+        display: flex;
+        width: 100%;
+    }
+
+    .todo-filters button {
+        flex: 1;
+    }
+
+    .todo-sort {
+        justify-content: space-between;
     }
 
     .todo-edit-form {
