@@ -11,6 +11,7 @@ export default function Home() {
     const [todoText, setTodoText] = useState("");
     const [todoFilter, setTodoFilter] = useState<TodoFilter>("all");
     const [todoSort, setTodoSort] = useState<TodoSort>("newest");
+    const [todoSearchText, setTodoSearchText] = useState("");
     const {
         todos,
         addTodo,
@@ -40,17 +41,22 @@ export default function Home() {
 
     const activeTodoCount = todos.filter((todo) => !todo.completed).length;
     const completedTodoCount = todos.length - activeTodoCount;
+    const normalizedSearchText = todoSearchText.trim().toLowerCase();
 
     const filteredTodos = todos.filter((todo) => {
+        const matchesSearchText =
+            !normalizedSearchText ||
+            todo.text.toLowerCase().includes(normalizedSearchText);
+
         if (todoFilter === "active") {
-            return !todo.completed;
+            return !todo.completed && matchesSearchText;
         }
 
         if (todoFilter === "completed") {
-            return todo.completed;
+            return todo.completed && matchesSearchText;
         }
 
-        return true;
+        return matchesSearchText;
     });
     const sortedTodos = [...filteredTodos].sort((firstTodo, secondTodo) => {
         const firstCreatedAt = new Date(firstTodo.createdAt).getTime();
@@ -92,6 +98,16 @@ export default function Home() {
 
             <section className="todo-list" aria-labelledby="todo-list-title">
                 <h2 id="todo-list-title">Todo一覧</h2>
+                <label className="todo-search" htmlFor="todo-search">
+                    Todoを検索
+                    <input
+                        id="todo-search"
+                        type="search"
+                        value={todoSearchText}
+                        onChange={(event) => setTodoSearchText(event.target.value)}
+                        placeholder="キーワードを入力"
+                    />
+                </label>
                 <div className="todo-controls">
                     <div className="todo-filters" aria-label="Todoの表示切り替え">
                         <button

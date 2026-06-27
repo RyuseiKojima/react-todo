@@ -54,4 +54,20 @@ describe("Home", () => {
 
         expect(getVisibleTodoTexts()).toEqual(["最初のtodo", "次のtodo"]);
     });
+
+    it("入力したキーワードでtodoを検索する", async () => {
+        localStorage.setItem("react-todo-items", JSON.stringify(savedTodos));
+
+        render(<Home />);
+
+        await waitFor(() => {
+            expect(getVisibleTodoTexts()).toEqual(["次のtodo", "最初のtodo"]);
+        });
+
+        fireEvent.change(screen.getByLabelText("Todoを検索"), {
+            target: { value: "最初" },
+        });
+
+        expect(getVisibleTodoTexts()).toEqual(["最初のtodo"]);
+    });
 });
