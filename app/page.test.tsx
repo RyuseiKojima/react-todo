@@ -5,7 +5,7 @@ import {
     waitFor,
     within,
 } from "@testing-library/react";
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import Home from "./page";
 import type { Todo } from "./hooks/useTodos";
@@ -37,6 +37,11 @@ const getVisibleTodoTexts = () =>
 describe("Home", () => {
     beforeEach(() => {
         localStorage.clear();
+        vi.spyOn(crypto, "randomUUID").mockReturnValue("new-todo-id");
+    });
+
+    afterEach(() => {
+        vi.restoreAllMocks();
     });
 
     it("作成日時でtodoの並び順を切り替える", async () => {
@@ -86,5 +91,19 @@ describe("Home", () => {
             "aria-invalid",
             "true",
         );
+    });
+
+    it("todoを追加したら成功メッセージを表示する", () => {
+        render(<Home />);
+
+        fireEvent.change(screen.getByLabelText("やること"), {
+            target: { value: "Reactを復習する" },
+        });
+        fireEvent.click(screen.getByRole("button", { name: "追加" }));
+
+        expect(screen.getByRole("status")).toHaveTextContent(
+            "Reactを復習するを追加しました。",
+        );
+        expect(screen.getByLabelText("やること")).toHaveValue("");
     });
 });

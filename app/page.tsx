@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import TodoItem from "./components/TodoItem";
 import { TODO_TEXT_MAX_LENGTH } from "./constants/todo";
 import { useTodos } from "./hooks/useTodos";
@@ -8,11 +8,17 @@ import { useTodos } from "./hooks/useTodos";
 type TodoFilter = "all" | "active" | "completed";
 type TodoSort = "newest" | "oldest";
 
+const SUCCESS_MESSAGE_DURATION_MS = 3000;
+
 export default function Home() {
     const [todoText, setTodoText] = useState("");
     const [todoFilter, setTodoFilter] = useState<TodoFilter>("all");
     const [todoSort, setTodoSort] = useState<TodoSort>("newest");
     const [todoSearchText, setTodoSearchText] = useState("");
+    const [todoSuccessMessage, setTodoSuccessMessage] = useState("");
+    const successMessageTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
+        null,
+    );
     const {
         todos,
         addTodo,
@@ -21,6 +27,14 @@ export default function Home() {
         deleteTodo,
         clearCompletedTodos,
     } = useTodos();
+
+    useEffect(() => {
+        return () => {
+            if (successMessageTimerRef.current) {
+                clearTimeout(successMessageTimerRef.current);
+            }
+        };
+    }, []);
 
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -33,6 +47,16 @@ export default function Home() {
 
         addTodo(trimmedTodoText);
         setTodoText("");
+        setTodoSuccessMessage(`${trimmedTodoText}を追加しました。`);
+
+        if (successMessageTimerRef.current) {
+            clearTimeout(successMessageTimerRef.current);
+        }
+
+        successMessageTimerRef.current = setTimeout(() => {
+            setTodoSuccessMessage("");
+            successMessageTimerRef.current = null;
+        }, SUCCESS_MESSAGE_DURATION_MS);
     };
 
     const handleClearCompleted = () => {
@@ -121,6 +145,11 @@ export default function Home() {
                 >
                     {todoTextMessage}
                 </p>
+                {todoSuccessMessage && (
+                    <p className="todo-success" role="status">
+                        {todoSuccessMessage}
+                    </p>
+                )}
             </section>
 
             <section className="todo-list" aria-labelledby="todo-list-title">

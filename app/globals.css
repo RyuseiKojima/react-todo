@@ -93,6 +93,16 @@ select {
     font-weight: 600;
 }
 
+.todo-success {
+    margin-top: 10px;
+    padding: 9px 12px;
+    border: 1px solid #8fbf9b;
+    border-radius: 6px;
+    color: #1f6b34;
+    background: #ecf7ef;
+    font-weight: 600;
+}
+
 .todo-form-row {
     display: flex;
     gap: 8px;
