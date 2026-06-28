@@ -7,6 +7,8 @@ import { useTodos } from "./hooks/useTodos";
 type TodoFilter = "all" | "active" | "completed";
 type TodoSort = "newest" | "oldest";
 
+const TODO_TEXT_MAX_LENGTH = 40;
+
 export default function Home() {
     const [todoText, setTodoText] = useState("");
     const [todoFilter, setTodoFilter] = useState<TodoFilter>("all");
@@ -26,7 +28,7 @@ export default function Home() {
 
         const trimmedTodoText = todoText.trim();
 
-        if (!trimmedTodoText) {
+        if (!trimmedTodoText || todoText.length > TODO_TEXT_MAX_LENGTH) {
             return;
         }
 
@@ -41,6 +43,26 @@ export default function Home() {
 
     const activeTodoCount = todos.filter((todo) => !todo.completed).length;
     const completedTodoCount = todos.length - activeTodoCount;
+    const isTodoTextOnlySpaces = todoText.length > 0 && !todoText.trim();
+    const isTodoTextTooLong = todoText.length > TODO_TEXT_MAX_LENGTH;
+    const hasTodoTextError = isTodoTextOnlySpaces || isTodoTextTooLong;
+    const canSubmitTodo = Boolean(todoText.trim()) && !isTodoTextTooLong;
+    const remainingTodoTextLength = TODO_TEXT_MAX_LENGTH - todoText.length;
+    const todoTextMessage = (() => {
+        if (!todoText) {
+            return "Todoを入力してください。";
+        }
+
+        if (isTodoTextOnlySpaces) {
+            return "空白だけのTodoは追加できません。";
+        }
+
+        if (isTodoTextTooLong) {
+            return `${TODO_TEXT_MAX_LENGTH}文字以内で入力してください。現在${todoText.length}文字です。`;
+        }
+
+        return `入力中: ${todoText}（残り${remainingTodoTextLength}文字）`;
+    })();
     const normalizedSearchText = todoSearchText.trim().toLowerCase();
 
     const filteredTodos = todos.filter((todo) => {
@@ -85,14 +107,20 @@ export default function Home() {
                             value={todoText}
                             onChange={(event) => setTodoText(event.target.value)}
                             placeholder="例: ReactのuseStateを学ぶ"
+                            aria-describedby="todo-text-message"
+                            aria-invalid={hasTodoTextError}
                         />
-                        <button type="submit" disabled={!todoText.trim()}>
+                        <button type="submit" disabled={!canSubmitTodo}>
                             追加
                         </button>
                     </div>
                 </form>
-                <p className="todo-preview">
-                    {todoText ? `入力中: ${todoText}` : "Todoを入力してください。"}
+                <p
+                    id="todo-text-message"
+                    className={hasTodoTextError ? "todo-preview error" : "todo-preview"}
+                    aria-live="polite"
+                >
+                    {todoTextMessage}
                 </p>
             </section>
 

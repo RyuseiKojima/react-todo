@@ -70,4 +70,21 @@ describe("Home", () => {
 
         expect(getVisibleTodoTexts()).toEqual(["最初のtodo"]);
     });
+
+    it("todoの入力文字数が上限を超えたら追加できない", () => {
+        render(<Home />);
+
+        fireEvent.change(screen.getByLabelText("やること"), {
+            target: { value: "あ".repeat(41) },
+        });
+
+        expect(
+            screen.getByText("40文字以内で入力してください。現在41文字です。"),
+        ).toBeInTheDocument();
+        expect(screen.getByRole("button", { name: "追加" })).toBeDisabled();
+        expect(screen.getByLabelText("やること")).toHaveAttribute(
+            "aria-invalid",
+            "true",
+        );
+    });
 });

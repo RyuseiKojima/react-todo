@@ -74,10 +74,23 @@ select {
     outline: 3px solid #b9dcf7;
 }
 
+.todo-input input[aria-invalid="true"] {
+    border-color: #c23b3b;
+}
+
+.todo-input input[aria-invalid="true"]:focus {
+    outline-color: #f0b8b8;
+}
+
 .todo-input .todo-preview {
     min-height: 27px;
     margin-top: 12px;
     color: #3c4043;
+}
+
+.todo-input .todo-preview.error {
+    color: #a12626;
+    font-weight: 600;
 }
 
 .todo-form-row {
