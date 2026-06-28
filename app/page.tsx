@@ -2,12 +2,11 @@
 
 import { FormEvent, useState } from "react";
 import TodoItem from "./components/TodoItem";
+import { TODO_TEXT_MAX_LENGTH } from "./constants/todo";
 import { useTodos } from "./hooks/useTodos";
 
 type TodoFilter = "all" | "active" | "completed";
 type TodoSort = "newest" | "oldest";
-
-const TODO_TEXT_MAX_LENGTH = 40;
 
 export default function Home() {
     const [todoText, setTodoText] = useState("");

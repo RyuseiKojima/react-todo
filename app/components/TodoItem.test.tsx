@@ -67,6 +67,58 @@ describe("TodoItem", () => {
         expect(handleEdit).toHaveBeenCalledWith("牛乳を買う");
     });
 
+    it("編集内容が上限を超えたら保存できない", () => {
+        const handleEdit = vi.fn();
+
+        render(
+            <TodoItem
+                text="買い物に行く"
+                completed={false}
+                createdAt={CREATED_AT}
+                onToggle={vi.fn()}
+                onEdit={handleEdit}
+                onDelete={vi.fn()}
+            />,
+        );
+
+        fireEvent.click(screen.getByRole("button", { name: "編集" }));
+        fireEvent.change(screen.getByRole("textbox", { name: "買い物に行くを編集" }), {
+            target: { value: "あ".repeat(41) },
+        });
+        fireEvent.click(screen.getByRole("button", { name: "保存" }));
+
+        expect(
+            screen.getByText("40文字以内で入力してください。現在41文字です。"),
+        ).toBeInTheDocument();
+        expect(screen.getByRole("button", { name: "保存" })).toBeDisabled();
+        expect(handleEdit).not.toHaveBeenCalled();
+    });
+
+    it("編集内容が空白だけなら保存できない", () => {
+        const handleEdit = vi.fn();
+
+        render(
+            <TodoItem
+                text="買い物に行く"
+                completed={false}
+                createdAt={CREATED_AT}
+                onToggle={vi.fn()}
+                onEdit={handleEdit}
+                onDelete={vi.fn()}
+            />,
+        );
+
+        fireEvent.click(screen.getByRole("button", { name: "編集" }));
+        fireEvent.change(screen.getByRole("textbox", { name: "買い物に行くを編集" }), {
+            target: { value: "   " },
+        });
+        fireEvent.click(screen.getByRole("button", { name: "保存" }));
+
+        expect(screen.getByText("空白だけのTodoは保存できません。")).toBeInTheDocument();
+        expect(screen.getByRole("button", { name: "保存" })).toBeDisabled();
+        expect(handleEdit).not.toHaveBeenCalled();
+    });
+
     it("削除ボタンをクリックしたら削除処理を呼ぶ", () => {
         const handleDelete = vi.fn();
 

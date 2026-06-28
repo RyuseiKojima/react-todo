@@ -324,12 +324,20 @@ select {
 
 .todo-edit-form {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     flex: 1;
     gap: 8px;
 }
 
-.todo-edit-form input {
+.todo-edit-field {
+    display: flex;
+    min-width: 0;
+    flex: 1;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.todo-edit-field input {
     min-width: 0;
     min-height: 36px;
     padding: 7px 10px;
@@ -338,9 +346,34 @@ select {
     flex: 1;
 }
 
-.todo-edit-form input:focus {
+.todo-edit-field input:focus {
     border-color: #1769aa;
     outline: 3px solid #b9dcf7;
+}
+
+.todo-edit-field input[aria-invalid="true"] {
+    border-color: #c23b3b;
+}
+
+.todo-edit-field input[aria-invalid="true"]:focus {
+    outline-color: #f0b8b8;
+}
+
+.todo-edit-message {
+    min-height: 20px;
+    color: #3c4043;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.todo-edit-message.error {
+    color: #a12626;
+    font-weight: 600;
+}
+
+.todo-edit-actions {
+    display: flex;
+    gap: 8px;
 }
 
 .todo-status {
@@ -417,8 +450,16 @@ select {
         flex-wrap: wrap;
     }
 
-    .todo-edit-form input {
+    .todo-edit-field {
         flex-basis: 100%;
+    }
+
+    .todo-edit-actions {
+        width: 100%;
+    }
+
+    .todo-edit-actions button {
+        flex: 1;
     }
 
     .todo-status {

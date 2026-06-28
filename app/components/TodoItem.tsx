@@ -1,4 +1,5 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useId, useState } from "react";
+import { TODO_TEXT_MAX_LENGTH } from "../constants/todo";
 
 type TodoItemProps = {
     text: string;
@@ -26,8 +27,28 @@ export default function TodoItem({
     onEdit,
     onDelete,
 }: TodoItemProps) {
+    const editMessageId = useId();
     const [isEditing, setIsEditing] = useState(false);
     const [editText, setEditText] = useState(text);
+    const isEditTextOnlySpaces = editText.length > 0 && !editText.trim();
+    const isEditTextTooLong = editText.length > TODO_TEXT_MAX_LENGTH;
+    const hasEditTextError = isEditTextOnlySpaces || isEditTextTooLong;
+    const canSubmitEditText = Boolean(editText.trim()) && !isEditTextTooLong;
+    const editTextMessage = (() => {
+        if (!editText) {
+            return "Todoを入力してください。";
+        }
+
+        if (isEditTextOnlySpaces) {
+            return "空白だけのTodoは保存できません。";
+        }
+
+        if (isEditTextTooLong) {
+            return `${TODO_TEXT_MAX_LENGTH}文字以内で入力してください。現在${editText.length}文字です。`;
+        }
+
+        return `編集中: ${editText}（残り${TODO_TEXT_MAX_LENGTH - editText.length}文字）`;
+    })();
 
     const handleEditStart = () => {
         setEditText(text);
@@ -44,7 +65,7 @@ export default function TodoItem({
 
         const trimmedEditText = editText.trim();
 
-        if (!trimmedEditText) {
+        if (!trimmedEditText || isEditTextTooLong) {
             return;
         }
 
@@ -56,18 +77,35 @@ export default function TodoItem({
         return (
             <li className={completed ? "completed" : ""}>
                 <form className="todo-edit-form" onSubmit={handleEditSubmit}>
-                    <input
-                        type="text"
-                        value={editText}
-                        onChange={(event) => setEditText(event.target.value)}
-                        aria-label={`${text}を編集`}
-                    />
-                    <button type="submit" disabled={!editText.trim()}>
-                        保存
-                    </button>
-                    <button type="button" onClick={handleEditCancel}>
-                        キャンセル
-                    </button>
+                    <div className="todo-edit-field">
+                        <input
+                            type="text"
+                            value={editText}
+                            onChange={(event) => setEditText(event.target.value)}
+                            aria-label={`${text}を編集`}
+                            aria-describedby={editMessageId}
+                            aria-invalid={hasEditTextError}
+                        />
+                        <p
+                            id={editMessageId}
+                            className={
+                                hasEditTextError
+                                    ? "todo-edit-message error"
+                                    : "todo-edit-message"
+                            }
+                            aria-live="polite"
+                        >
+                            {editTextMessage}
+                        </p>
+                    </div>
+                    <div className="todo-edit-actions">
+                        <button type="submit" disabled={!canSubmitEditText}>
+                            保存
+                        </button>
+                        <button type="button" onClick={handleEditCancel}>
+                            キャンセル
+                        </button>
+                    </div>
                 </form>
             </li>
         );
