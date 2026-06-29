@@ -73,6 +73,16 @@ export default function TodoItem({
         setIsEditing(false);
     };
 
+    const handleDeleteClick = () => {
+        const canDelete = window.confirm(`${text}を削除しますか？`);
+
+        if (!canDelete) {
+            return;
+        }
+
+        onDelete();
+    };
+
     if (isEditing) {
         return (
             <li className={completed ? "completed" : ""}>
@@ -133,7 +143,7 @@ export default function TodoItem({
                 <button
                     type="button"
                     className="delete-button"
-                    onClick={onDelete}
+                    onClick={handleDeleteClick}
                     aria-label={`${text}を削除`}
                 >
                     削除

@@ -1,11 +1,15 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import TodoItem from "./TodoItem";
 
 const CREATED_AT = "2026-06-24T03:30:00.000Z";
 
 describe("TodoItem", () => {
+    afterEach(() => {
+        vi.restoreAllMocks();
+    });
+
     it("todoの内容を表示する", () => {
         render(
             <TodoItem
@@ -119,8 +123,9 @@ describe("TodoItem", () => {
         expect(handleEdit).not.toHaveBeenCalled();
     });
 
-    it("削除ボタンをクリックしたら削除処理を呼ぶ", () => {
+    it("削除確認でOKを選んだら削除処理を呼ぶ", () => {
         const handleDelete = vi.fn();
+        vi.spyOn(window, "confirm").mockReturnValue(true);
 
         render(
             <TodoItem
@@ -135,6 +140,28 @@ describe("TodoItem", () => {
 
         fireEvent.click(screen.getByRole("button", { name: "買い物に行くを削除" }));
 
+        expect(window.confirm).toHaveBeenCalledWith("買い物に行くを削除しますか？");
         expect(handleDelete).toHaveBeenCalledTimes(1);
+    });
+
+    it("削除確認でキャンセルを選んだら削除処理を呼ばない", () => {
+        const handleDelete = vi.fn();
+        vi.spyOn(window, "confirm").mockReturnValue(false);
+
+        render(
+            <TodoItem
+                text="買い物に行く"
+                completed={false}
+                createdAt={CREATED_AT}
+                onToggle={vi.fn()}
+                onEdit={vi.fn()}
+                onDelete={handleDelete}
+            />,
+        );
+
+        fireEvent.click(screen.getByRole("button", { name: "買い物に行くを削除" }));
+
+        expect(window.confirm).toHaveBeenCalledWith("買い物に行くを削除しますか？");
+        expect(handleDelete).not.toHaveBeenCalled();
     });
 });
