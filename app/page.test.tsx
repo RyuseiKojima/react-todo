@@ -34,6 +34,11 @@ const getVisibleTodoTexts = () =>
             return todoText?.textContent;
         });
 
+const getTodoItemByText = (text: string) =>
+    within(screen.getByRole("list"))
+        .getAllByRole("listitem")
+        .find((todoItem) => todoItem.textContent?.includes(text));
+
 describe("Home", () => {
     beforeEach(() => {
         localStorage.clear();
@@ -107,6 +112,76 @@ describe("Home", () => {
         expect(screen.getByLabelText("やること")).toHaveValue("");
     });
 
+    it("todoを完了にしたら成功メッセージを表示する", async () => {
+        localStorage.setItem("react-todo-items", JSON.stringify(savedTodos));
+
+        render(<Home />);
+
+        await waitFor(() => {
+            expect(getVisibleTodoTexts()).toEqual(["次のtodo", "最初のtodo"]);
+        });
+
+        const todoItem = getTodoItemByText("最初のtodo");
+
+        expect(todoItem).toBeDefined();
+
+        fireEvent.click(within(todoItem!).getByRole("checkbox"));
+
+        expect(screen.getByRole("status")).toHaveTextContent(
+            "最初のtodoを完了にしました。",
+        );
+    });
+
+    it("todoを編集したら成功メッセージを表示する", async () => {
+        localStorage.setItem("react-todo-items", JSON.stringify(savedTodos));
+
+        render(<Home />);
+
+        await waitFor(() => {
+            expect(getVisibleTodoTexts()).toEqual(["次のtodo", "最初のtodo"]);
+        });
+
+        const todoItem = getTodoItemByText("最初のtodo");
+
+        expect(todoItem).toBeDefined();
+
+        fireEvent.click(within(todoItem!).getByRole("button", { name: "編集" }));
+        fireEvent.change(
+            screen.getByRole("textbox", { name: "最初のtodoを編集" }),
+            {
+                target: { value: "テストを書く" },
+            },
+        );
+        fireEvent.click(screen.getByRole("button", { name: "保存" }));
+
+        expect(screen.getByRole("status")).toHaveTextContent(
+            "テストを書くを保存しました。",
+        );
+    });
+
+    it("todoを削除したら成功メッセージを表示する", async () => {
+        vi.spyOn(window, "confirm").mockReturnValue(true);
+        localStorage.setItem("react-todo-items", JSON.stringify(savedTodos));
+
+        render(<Home />);
+
+        await waitFor(() => {
+            expect(getVisibleTodoTexts()).toEqual(["次のtodo", "最初のtodo"]);
+        });
+
+        const todoItem = getTodoItemByText("最初のtodo");
+
+        expect(todoItem).toBeDefined();
+
+        fireEvent.click(
+            within(todoItem!).getByRole("button", { name: "最初のtodoを削除" }),
+        );
+
+        expect(screen.getByRole("status")).toHaveTextContent(
+            "最初のtodoを削除しました。",
+        );
+    });
+
     it("確認でOKを選んだら完了済みtodoを削除する", async () => {
         vi.spyOn(window, "confirm").mockReturnValue(true);
         localStorage.setItem("react-todo-items", JSON.stringify(savedTodos));
@@ -125,6 +200,9 @@ describe("Home", () => {
         await waitFor(() => {
             expect(getVisibleTodoTexts()).toEqual(["最初のtodo"]);
         });
+        expect(screen.getByRole("status")).toHaveTextContent(
+            "1件の完了済みTodoを削除しました。",
+        );
     });
 
     it("確認でキャンセルを選んだら完了済みtodoを削除しない", async () => {

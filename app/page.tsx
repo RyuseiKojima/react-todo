@@ -36,6 +36,19 @@ export default function Home() {
         };
     }, []);
 
+    const showSuccessMessage = (message: string) => {
+        setTodoSuccessMessage(message);
+
+        if (successMessageTimerRef.current) {
+            clearTimeout(successMessageTimerRef.current);
+        }
+
+        successMessageTimerRef.current = setTimeout(() => {
+            setTodoSuccessMessage("");
+            successMessageTimerRef.current = null;
+        }, SUCCESS_MESSAGE_DURATION_MS);
+    };
+
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
@@ -47,16 +60,30 @@ export default function Home() {
 
         addTodo(trimmedTodoText);
         setTodoText("");
-        setTodoSuccessMessage(`${trimmedTodoText}を追加しました。`);
+        showSuccessMessage(`${trimmedTodoText}を追加しました。`);
+    };
 
-        if (successMessageTimerRef.current) {
-            clearTimeout(successMessageTimerRef.current);
-        }
+    const handleToggleTodo = (
+        todoId: string,
+        text: string,
+        completed: boolean,
+    ) => {
+        toggleTodo(todoId);
+        showSuccessMessage(
+            completed
+                ? `${text}を未完了に戻しました。`
+                : `${text}を完了にしました。`,
+        );
+    };
 
-        successMessageTimerRef.current = setTimeout(() => {
-            setTodoSuccessMessage("");
-            successMessageTimerRef.current = null;
-        }, SUCCESS_MESSAGE_DURATION_MS);
+    const handleEditTodo = (todoId: string, newText: string) => {
+        editTodo(todoId, newText);
+        showSuccessMessage(`${newText}を保存しました。`);
+    };
+
+    const handleDeleteTodo = (todoId: string, text: string) => {
+        deleteTodo(todoId);
+        showSuccessMessage(`${text}を削除しました。`);
     };
 
     const handleClearCompleted = () => {
@@ -70,6 +97,7 @@ export default function Home() {
 
         clearCompletedTodos();
         setTodoFilter("all");
+        showSuccessMessage(`${completedTodoCount}件の完了済みTodoを削除しました。`);
     };
 
     const activeTodoCount = todos.filter((todo) => !todo.completed).length;
@@ -226,11 +254,19 @@ export default function Home() {
                                 text={todo.text}
                                 completed={todo.completed}
                                 createdAt={todo.createdAt}
-                                onToggle={() => toggleTodo(todo.id)}
-                                onEdit={(newText) =>
-                                    editTodo(todo.id, newText)
+                                onToggle={() =>
+                                    handleToggleTodo(
+                                        todo.id,
+                                        todo.text,
+                                        todo.completed,
+                                    )
                                 }
-                                onDelete={() => deleteTodo(todo.id)}
+                                onEdit={(newText) =>
+                                    handleEditTodo(todo.id, newText)
+                                }
+                                onDelete={() =>
+                                    handleDeleteTodo(todo.id, todo.text)
+                                }
                             />
                         ))}
                     </ul>
