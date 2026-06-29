@@ -60,6 +60,14 @@ export default function Home() {
     };
 
     const handleClearCompleted = () => {
+        const canClearCompleted = window.confirm(
+            `${completedTodoCount}件の完了済みTodoを削除しますか？`,
+        );
+
+        if (!canClearCompleted) {
+            return;
+        }
+
         clearCompletedTodos();
         setTodoFilter("all");
     };

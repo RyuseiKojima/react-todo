@@ -20,7 +20,7 @@ const savedTodos: Todo[] = [
     {
         id: "second-todo-id",
         text: "次のtodo",
-        completed: false,
+        completed: true,
         createdAt: "2026-06-24T01:00:00.000Z",
     },
 ];
@@ -105,5 +105,43 @@ describe("Home", () => {
             "Reactを復習するを追加しました。",
         );
         expect(screen.getByLabelText("やること")).toHaveValue("");
+    });
+
+    it("確認でOKを選んだら完了済みtodoを削除する", async () => {
+        vi.spyOn(window, "confirm").mockReturnValue(true);
+        localStorage.setItem("react-todo-items", JSON.stringify(savedTodos));
+
+        render(<Home />);
+
+        await waitFor(() => {
+            expect(getVisibleTodoTexts()).toEqual(["次のtodo", "最初のtodo"]);
+        });
+
+        fireEvent.click(screen.getByRole("button", { name: "完了済みを削除" }));
+
+        expect(window.confirm).toHaveBeenCalledWith(
+            "1件の完了済みTodoを削除しますか？",
+        );
+        await waitFor(() => {
+            expect(getVisibleTodoTexts()).toEqual(["最初のtodo"]);
+        });
+    });
+
+    it("確認でキャンセルを選んだら完了済みtodoを削除しない", async () => {
+        vi.spyOn(window, "confirm").mockReturnValue(false);
+        localStorage.setItem("react-todo-items", JSON.stringify(savedTodos));
+
+        render(<Home />);
+
+        await waitFor(() => {
+            expect(getVisibleTodoTexts()).toEqual(["次のtodo", "最初のtodo"]);
+        });
+
+        fireEvent.click(screen.getByRole("button", { name: "完了済みを削除" }));
+
+        expect(window.confirm).toHaveBeenCalledWith(
+            "1件の完了済みTodoを削除しますか？",
+        );
+        expect(getVisibleTodoTexts()).toEqual(["次のtodo", "最初のtodo"]);
     });
 });
