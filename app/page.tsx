@@ -4,6 +4,7 @@ import { FormEvent, useEffect, useRef, useState } from "react";
 import SuccessMessage from "./components/SuccessMessage";
 import TodoForm from "./components/TodoForm";
 import TodoItem from "./components/TodoItem";
+import TodoSearch from "./components/TodoSearch";
 import { TODO_TEXT_MAX_LENGTH } from "./constants/todo";
 import { useTodos } from "./hooks/useTodos";
 
@@ -186,16 +187,10 @@ export default function Home() {
 
             <section className="todo-list" aria-labelledby="todo-list-title">
                 <h2 id="todo-list-title">Todo一覧</h2>
-                <label className="todo-search" htmlFor="todo-search">
-                    Todoを検索
-                    <input
-                        id="todo-search"
-                        type="search"
-                        value={todoSearchText}
-                        onChange={(event) => setTodoSearchText(event.target.value)}
-                        placeholder="キーワードを入力"
-                    />
-                </label>
+                <TodoSearch
+                    searchText={todoSearchText}
+                    onSearchTextChange={setTodoSearchText}
+                />
                 <div className="todo-controls">
                     <div className="todo-filters" aria-label="Todoの表示切り替え">
                         <button
