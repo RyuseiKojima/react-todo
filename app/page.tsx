@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useRef, useState } from "react";
 import SuccessMessage from "./components/SuccessMessage";
+import TodoForm from "./components/TodoForm";
 import TodoItem from "./components/TodoItem";
 import { TODO_TEXT_MAX_LENGTH } from "./constants/todo";
 import { useTodos } from "./hooks/useTodos";
@@ -167,30 +168,14 @@ export default function Home() {
 
             <section className="todo-input" aria-labelledby="todo-input-title">
                 <h2 id="todo-input-title">新しいTodo</h2>
-                <form onSubmit={handleSubmit}>
-                    <label htmlFor="todo-text">やること</label>
-                    <div className="todo-form-row">
-                        <input
-                            id="todo-text"
-                            type="text"
-                            value={todoText}
-                            onChange={(event) => setTodoText(event.target.value)}
-                            placeholder="例: ReactのuseStateを学ぶ"
-                            aria-describedby="todo-text-message"
-                            aria-invalid={hasTodoTextError}
-                        />
-                        <button type="submit" disabled={!canSubmitTodo}>
-                            追加
-                        </button>
-                    </div>
-                </form>
-                <p
-                    id="todo-text-message"
-                    className={hasTodoTextError ? "todo-preview error" : "todo-preview"}
-                    aria-live="polite"
-                >
-                    {todoTextMessage}
-                </p>
+                <TodoForm
+                    todoText={todoText}
+                    todoTextMessage={todoTextMessage}
+                    hasTodoTextError={hasTodoTextError}
+                    canSubmitTodo={canSubmitTodo}
+                    onTodoTextChange={setTodoText}
+                    onSubmit={handleSubmit}
+                />
                 {todoSuccessMessage && (
                     <SuccessMessage
                         message={todoSuccessMessage}
