@@ -94,6 +94,10 @@ select {
 }
 
 .todo-success {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
     margin-top: 10px;
     padding: 9px 12px;
     border: 1px solid #8fbf9b;
@@ -101,6 +105,32 @@ select {
     color: #1f6b34;
     background: #ecf7ef;
     font-weight: 600;
+}
+
+.todo-success p {
+    min-width: 0;
+    color: inherit;
+}
+
+.todo-success button {
+    flex: 0 0 auto;
+    min-height: 30px;
+    padding: 4px 8px;
+    border: 1px solid #5d966b;
+    border-radius: 6px;
+    color: #1f6b34;
+    background: #ffffff;
+    cursor: pointer;
+}
+
+.todo-success button:hover {
+    color: #ffffff;
+    background: #1f6b34;
+}
+
+.todo-success button:focus-visible {
+    outline: 3px solid #bfe3c7;
+    outline-offset: 2px;
 }
 
 .todo-form-row {

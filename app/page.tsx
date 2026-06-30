@@ -49,6 +49,15 @@ export default function Home() {
         }, SUCCESS_MESSAGE_DURATION_MS);
     };
 
+    const hideSuccessMessage = () => {
+        setTodoSuccessMessage("");
+
+        if (successMessageTimerRef.current) {
+            clearTimeout(successMessageTimerRef.current);
+            successMessageTimerRef.current = null;
+        }
+    };
+
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
@@ -182,9 +191,16 @@ export default function Home() {
                     {todoTextMessage}
                 </p>
                 {todoSuccessMessage && (
-                    <p className="todo-success" role="status">
-                        {todoSuccessMessage}
-                    </p>
+                    <div className="todo-success" role="status">
+                        <p>{todoSuccessMessage}</p>
+                        <button
+                            type="button"
+                            onClick={hideSuccessMessage}
+                            aria-label="成功メッセージを閉じる"
+                        >
+                            閉じる
+                        </button>
+                    </div>
                 )}
             </section>
 

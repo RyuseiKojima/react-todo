@@ -112,6 +112,20 @@ describe("Home", () => {
         expect(screen.getByLabelText("やること")).toHaveValue("");
     });
 
+    it("成功メッセージを閉じられる", () => {
+        render(<Home />);
+
+        fireEvent.change(screen.getByLabelText("やること"), {
+            target: { value: "Reactを復習する" },
+        });
+        fireEvent.click(screen.getByRole("button", { name: "追加" }));
+        fireEvent.click(
+            screen.getByRole("button", { name: "成功メッセージを閉じる" }),
+        );
+
+        expect(screen.queryByRole("status")).not.toBeInTheDocument();
+    });
+
     it("todoを完了にしたら成功メッセージを表示する", async () => {
         localStorage.setItem("react-todo-items", JSON.stringify(savedTodos));
 
