@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useRef, useState } from "react";
+import SuccessMessage from "./components/SuccessMessage";
 import TodoItem from "./components/TodoItem";
 import { TODO_TEXT_MAX_LENGTH } from "./constants/todo";
 import { useTodos } from "./hooks/useTodos";
@@ -191,16 +192,10 @@ export default function Home() {
                     {todoTextMessage}
                 </p>
                 {todoSuccessMessage && (
-                    <div className="todo-success" role="status">
-                        <p>{todoSuccessMessage}</p>
-                        <button
-                            type="button"
-                            onClick={hideSuccessMessage}
-                            aria-label="成功メッセージを閉じる"
-                        >
-                            閉じる
-                        </button>
-                    </div>
+                    <SuccessMessage
+                        message={todoSuccessMessage}
+                        onClose={hideSuccessMessage}
+                    />
                 )}
             </section>
 
