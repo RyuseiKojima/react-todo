@@ -2,14 +2,15 @@
 
 import { FormEvent, useEffect, useRef, useState } from "react";
 import SuccessMessage from "./components/SuccessMessage";
+import TodoControls, {
+    type TodoFilter,
+    type TodoSort,
+} from "./components/TodoControls";
 import TodoForm from "./components/TodoForm";
 import TodoItem from "./components/TodoItem";
 import TodoSearch from "./components/TodoSearch";
 import { TODO_TEXT_MAX_LENGTH } from "./constants/todo";
 import { useTodos } from "./hooks/useTodos";
-
-type TodoFilter = "all" | "active" | "completed";
-type TodoSort = "newest" | "oldest";
 
 const SUCCESS_MESSAGE_DURATION_MS = 3000;
 
@@ -191,46 +192,12 @@ export default function Home() {
                     searchText={todoSearchText}
                     onSearchTextChange={setTodoSearchText}
                 />
-                <div className="todo-controls">
-                    <div className="todo-filters" aria-label="Todoの表示切り替え">
-                        <button
-                            type="button"
-                            className={todoFilter === "all" ? "active" : ""}
-                            aria-pressed={todoFilter === "all"}
-                            onClick={() => setTodoFilter("all")}
-                        >
-                            すべて
-                        </button>
-                        <button
-                            type="button"
-                            className={todoFilter === "active" ? "active" : ""}
-                            aria-pressed={todoFilter === "active"}
-                            onClick={() => setTodoFilter("active")}
-                        >
-                            未完了
-                        </button>
-                        <button
-                            type="button"
-                            className={todoFilter === "completed" ? "active" : ""}
-                            aria-pressed={todoFilter === "completed"}
-                            onClick={() => setTodoFilter("completed")}
-                        >
-                            完了
-                        </button>
-                    </div>
-                    <label className="todo-sort">
-                        並び順
-                        <select
-                            value={todoSort}
-                            onChange={(event) =>
-                                setTodoSort(event.target.value as TodoSort)
-                            }
-                        >
-                            <option value="newest">新しい順</option>
-                            <option value="oldest">古い順</option>
-                        </select>
-                    </label>
-                </div>
+                <TodoControls
+                    todoFilter={todoFilter}
+                    todoSort={todoSort}
+                    onTodoFilterChange={setTodoFilter}
+                    onTodoSortChange={setTodoSort}
+                />
                 {sortedTodos.length === 0 ? (
                     <p>
                         {todos.length === 0
